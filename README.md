@@ -7,6 +7,6 @@ This is an ongoing repository and things will be added or removed very often.
 
 Testing is still ongoing not even from this container but also from all other <b>js*</b> projects.
 
-See it at: http://jsfiddle.net/VN36D/4/
+See it at: http://jsfiddle.net/centurianii/LC7V
 
 
