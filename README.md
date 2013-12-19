@@ -42,4 +42,12 @@ A note on jQuery:
 -----------------------
 My library is independent but can become a jQuery plugin with a simple assignment!
 
+Update
+------
+My namespace moved from <code>$$</code> to <code>g3</code> and so all my projects moved from <code>js&lt;project-name&gt;</code> to <code>g3&lt;project-name&gt;</code> meaning: at global object <code>g3</code> look for member <code>&lt;project-name&gt;</code>, ex.<br />
+<ul>
+<li><code>g3debug</code> object <code>g3.debug</code></li>
+<li><code>g3utils</code> object <code>g3.utils</code></li>
+</ul>
+
 Have fun!
