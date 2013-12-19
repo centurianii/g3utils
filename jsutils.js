@@ -1,16 +1,16 @@
 /**
  * Root namespace.
- * @namespace {$$}
+ * @namespace {g3}
  */
-(function($$, $, window, document, undefined){
-   $$.utils = $$.utils || {};
+(function(g3, $, window, document, undefined){
+   g3.utils = g3.utils || {};
 /*****************************Function htmlEntities()***************************
 * Converts strings to their HTML character entity equivalents or their character
 * encoding values based on the encoding scheme defined by the page.
-* It mofifies '$$.utils.escapeUtf8()' by replacing encoding values with their
+* It mofifies 'g3.utils.escapeUtf8()' by replacing encoding values with their
 * HTML equivalent entities.
-* @module {$$.utils}
-* @function {$$.utils.htmlEntities}
+* @module {g3.utils}
+* @function {g3.utils.htmlEntities}
 * @public
 * @param {String} 'str' the string to search for and convert.
 * @return {String} Returns the encoding equivalent of the passed string with 
@@ -19,19 +19,20 @@
 * @reference http://stackoverflow.com/questions/1354064/how-to-convert-characters-to-html-entities-using-plain-javascript
 * http://en.wikipedia.org/wiki/Unicode
 * http://www.sitepoint.com/do-you-know-your-character-encodings/
+* http://people.w3.org/rishida/tools/conversion/
 *******************************************************************************/
-   $$.utils.htmlEntities = function(str){
-      var entityTable = $$.utils.entityTable.getInstance();
+   g3.utils.htmlEntities = function(str){
+      var entityTable = g3.utils.entityTable.getInstance();
       return str.replace(/[\u00A0-\u2666<>\&'"]/g, function(c){
          return '&' + (entityTable[c.charCodeAt(0)] || '#'+c.charCodeAt(0)) + ';';
       });
    };
    
 /**************************Function decodeHtmlEntities()************************
-* Converted strings from '$$.utils.htmlEntities()' are reverted back to their 
+* Converted strings from 'g3.utils.htmlEntities()' are reverted back to their 
 * original form based on the encoding scheme defined by the page.
-* @module {$$.utils}
-* @function {$$.utils.decodeHtmlEntities}
+* @module {g3.utils}
+* @function {g3.utils.decodeHtmlEntities}
 * @public
 * @param {String} 'str' the string to search for and revert.
 * @return {String} Returns the initial string as it is displayed by the current
@@ -40,7 +41,7 @@
 * http://en.wikipedia.org/wiki/Unicode
 * http://www.sitepoint.com/do-you-know-your-character-encodings/
 *******************************************************************************/
-   $$.utils.decodeHtmlEntities = function(str){
+   g3.utils.decodeHtmlEntities = function(str){
       var node = window.document.createElement('div');
       node.innerHTML = str;
       return node.firstChild.nodeValue;
@@ -50,11 +51,11 @@
 * HTML4 entities as defined here: http://www.w3.org/TR/html4/sgml/entities.html
 * added: amp, lt, gt, quot and apos. This object is a singleton with late 
 * construction to minimize memory footprint.
-* @module {$$.utils.entityTable}
+* @module {g3.utils.entityTable}
 * @constructor
 * @reference http://stackoverflow.com/questions/1354064/how-to-convert-characters-to-html-entities-using-plain-javascript
 *******************************************************************************/
-   $$.utils.entityTable = (function(){
+   g3.utils.entityTable = (function(){
       var entities = null;
       function getEntities(){
          if ( entities === null ) {
@@ -121,8 +122,8 @@
 /*****************************Function pointCodeAt()****************************
 * Returns character codes beyond 65535 which are represented as a 2-byte 
 * sequence. It extends 'String.prototype.charCodeAt'.
-* @module {$$.utils}
-* @function {$$.utils.pointCodeAt}
+* @module {g3.utils}
+* @function {g3.utils.pointCodeAt}
 * @public
 * @param {String} 'str' the string to search for and convert.
 * @param {Integer} 'pos' the current in-string byte.
@@ -132,7 +133,7 @@
 * @copyright 2012 MIT license.
 * @reference http://stackoverflow.com/questions/784586/convert-special-characters-to-html-in-javascript
 *******************************************************************************/
-   $$.utils.pointCodeAt = function(str, pos){
+   g3.utils.pointCodeAt = function(str, pos){
       pos = isNaN(pos) ? 0 : pos;
       if(typeof str !== 'string')
          return null;
@@ -146,31 +147,88 @@
 /*****************************Function escapeUtf8()*****************************
 * Extends javascript's 'escape()' function to cover UTF-8 characters and not 
 * only the range [0x00, 0xFF].
-* @module {$$.utils}
-* @function {$$.utils.escapeUtf8}
+* @module {g3.utils}
+* @function {g3.utils.escapeUtf8}
 * @public
 * @param {String} 'str' the string to convert to.
 * @return {String} Returns a string converted to hexadecimal notation.
 * @reference http://stackoverflow.com/questions/1354064/how-to-convert-characters-to-html-entities-using-plain-javascript
 *******************************************************************************/
-   $$.utils.escapeUtf8 = function(str){
+   g3.utils.escapeUtf8 = function(str){
       str = str.replace(/[\u00A0-\u2666]/g, function(c) {
          return '&#'+c.charCodeAt(0)+';';
       });
       return str;
    };
    
+/*********************************Object color**********************************
+* A color object for conversions between hexadecimal and decimal formats.
+* It supoorts 'rgb[a](r, g, b[, a])' -> 'hex', 'hex' -> 'rgb(r, g, b)'
+* @module {g3.utils.color}
+* @public
+* @constructor
+* @reference http://haacked.com/archive/2009/12/29/convert-rgb-to-hex.aspx/
+*******************************************************************************/
+   g3.utils.color = (function(){
+      function rgbToHex() {
+         var r, g, b;
+         if(arguments.length === 0)
+            return null;
+         else if(arguments.length === 1){
+            if (arguments[0].substr(0, 1) === '#') {
+               return arguments[0];
+            }
+            var m = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(arguments[0]);
+            if(m)
+               return '#' + (1 << 24 | m[1] << 16 | m[2] << 8 | m[3]).toString(16).substr(1);
+            r = arguments[0];
+            g = 0;
+            b = 0;
+         }else if(arguments.length === 2){
+            r = argumens[0];
+            g = argumens[1];
+            b = 0;
+         }else if(arguments.length >= 3){ //ignore the rest arguments
+            r = argumens[0];
+            g = argumens[1];
+            b = argumens[2];
+         }
+         if(!g3.utils.isNumber(r) || !g3.utils.isNumber(g) || !g3.utils.isNumber(b))
+            return null;
+         if(r < 0 || r > 255) return null;
+         if(g < 0 || g > 255) return null;
+         if(b < 0 || b > 255) return null;
+         return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1, 7);
+      }
+      function hexToRgb(hex) {
+         var bigint = ((hex.charAt(0)=== "#") ? hex.substring(1) : hex);
+         bigint = parseInt(hex, 16);
+         if(!g3.utils.isNumber(bigint))
+            return null;
+         var r = (bigint >> 16) & 255;
+         var g = (bigint >> 8) & 255;
+         var b = bigint & 255;
+         return "rgb(" + r + "," + g + "," + b + ")";
+      }
+      return {
+         rgbToHex: function(){return rgbToHex(arguments);},
+         hexToRgb: function(hex){return hexToRgb(hex);}
+      };
+   })();
+   
+   
+   
 /*******************************Function typeOf()*******************************
 * Overloads javascript's 'typeof' operator.
-* @module {$$.utils}
-* @function {$$.utils.typeOf}
+* @module {g3.utils}
+* @function {g3.utils.typeOf}
 * @public
 * @param {Type} 'value' an identifier of any javascript's type.
 * @return {string} Returns a string for the type of the passed argument.
 * @reference http://javascript.crockford.com/remedial.html
 * http://stackoverflow.com/questions/767486/how-do-you-check-if-a-variable-is-an-array-in-javascript/767499
 *******************************************************************************/
-   $$.utils.typeOf = function(value) {
+   g3.utils.typeOf = function(value) {
       var s = typeof value;
       if (s === 'object') {
          if (value) {
@@ -187,15 +245,15 @@
 /*******************************Function isNumber()*******************************
 * Checks an identifier against the number type.
 * Anything besides string or javascript numbers is not passed.
-* @module {$$.utils}
-* @function {$$.utils.isNumber}
+* @module {g3.utils}
+* @function {g3.utils.isNumber}
 * @public
 * @param {Number|String} 'n' an identifier to be identified/casted as number.
 * @return {Boolean} Returns true if the argument is a javascript number or a 
 * string that can be converted to a number.
 * @reference http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
 *******************************************************************************/
-   $$.utils.isNumber = (function(){
+   g3.utils.isNumber = (function(){
       var reg = /^-/;
       return function(n){
          return (Object.prototype.toString.call(n) === '[object Number]' || Object.prototype.toString.call(n) === '[object String]') && !isNaN(parseFloat(n)) && isFinite(n.toString().replace(reg, ''));
@@ -204,8 +262,8 @@
 
 /******************************Function htmlList()******************************
 * Returns a string of a html list constructed from the passed arguments.
-* @module {$$.utils}
-* @function {$$.utils.htmlList}
+* @module {g3.utils}
+* @function {g3.utils.htmlList}
 * @public
 * @param {String} 'type' the type of list, 'u' for onordered or 'o' for ordered.
 * @param {String|Array} Second and forth should be strings or instead it can 
@@ -217,13 +275,13 @@
 * @author Scripto JS Editor by Centurian Comet.
 * @copyright All rights reserved.
 *******************************************************************************/
-   $$.utils.htmlList = function(type) {
-      if(!type || ($$.utils.typeOf(type) != 'string') || ((type.toLowerCase() != 'u') && 
+   g3.utils.htmlList = function(type) {
+      if(!type || (g3.utils.typeOf(type) != 'string') || ((type.toLowerCase() != 'u') && 
         (type.toLowerCase() != 'o')) || (arguments.length <= 1))
          return false;
       var result = "<" + type.toLowerCase() + "l><li>";
       var args;
-      if($$.utils.typeOf(arguments[1]) === 'array')
+      if(g3.utils.typeOf(arguments[1]) === 'array')
          args = arguments[1];
       else
          args = Array.prototype.slice.call(arguments, 1);
@@ -231,4 +289,4 @@
       result += "</li></" + type.toLowerCase() + "l>";
       return result;
    };
-}(window.$$ = window.$$ || {}, jQuery, window, document));
+}(window.g3 = window.g3 || {}, jQuery, window, document));
