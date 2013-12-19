@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset=utf-8>
-<title>Test jsutils.js</title>
+<title>Test g3utils.js</title>
 <style>
    table {
       border-collapse: collapse;
@@ -22,7 +22,7 @@
    th, td {
       padding: 0.2em 1em;
    }
-</style>
+   </style>
 </head>
 <body>
    <FORM id="htmlentities" name="htmlentities">
@@ -32,19 +32,19 @@
          <TEXTAREA name="input" cols="80" rows="3" wrap="virtual"></TEXTAREA><br />
       </FIELDSET>
       <FIELDSET>
-         <LEGEND>Character encoder based on page's encoding scheme: <i>$$.utils.htmlEntities()</i></LEGEND>
+         <LEGEND>Character encoder based on page's encoding scheme: <i>g3.utils.htmlEntities()</i></LEGEND>
          <INPUT type="button" value="Encode" /><br />
          <TEXTAREA name="encode" cols="80" rows="3" wrap="virtual"></TEXTAREA><br />
       </FIELDSET>
       <FIELDSET>
-         <LEGEND>Character decoder based on page's encoding scheme: <i>$$.utils.decodeHtmlEntities</i></LEGEND>
+         <LEGEND>Character decoder based on page's encoding scheme: <i>g3.utils.decodeHtmlEntities</i></LEGEND>
          <INPUT type="button" value="Decode" /><br />
          <TEXTAREA name="decode" cols="80" rows="3" wrap="virtual"></TEXTAREA><br />
       </FIELDSET>
    </FORM>
    <TABLE id="entities">
    <THEAD class="thead">
-      <TR><TH colspan="10">Entity table stored in <i>$$.utils.entityTable</i></TH></TR>
+      <TR><TH colspan="10">Entity table stored in <i>g3.utils.entityTable</i></TH></TR>
    </THEAD>
    <TBODY class="tbody">
    </TBODY>
@@ -52,7 +52,7 @@
    
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="jquery-1.10.2.js"><\/script>')</script>
-    <script src="jsutils.js"></script>
+    <script src="g3utils.js"></script>
     <script>
       //DOM ready!
       $(function() {
@@ -61,16 +61,16 @@
              $encode = $('#htmlentities textarea[name="encode"]'),
              $decode = $('#htmlentities textarea[name="decode"]'),
              $tbody = $('#entities > tbody'),
-             entityTable = $$.utils.entityTable.getInstance(),
+             entityTable = g3.utils.entityTable.getInstance(),
              inner = '',
              i = 0,
              values = [];
          
-         //$$.utils.htmlEntities() or $$.utils.decodeHtmlEntities()
+         //g3.utils.htmlEntities() or g3.utils.decodeHtmlEntities()
          $buttons.on('click', function(event){
             if(this.value === 'Encode'){ //or, $(this).val() === 'Encode'
                $encode.val(
-                  $$.utils.htmlEntities( $input.val() )
+                  g3.utils.htmlEntities( $input.val() )
                );
             }else if(this.value === 'Decode'){ //or, $(this).val() === 'Decode'
                //what jquery can do:
@@ -78,9 +78,9 @@
                $decode.val(
                   $tmp.html()
                );*/
-               //what $$.utils.decodeHtmlEntities() can do:
+               //what g3.utils.decodeHtmlEntities() can do:
                $decode.val(
-                  $$.utils.decodeHtmlEntities($encode.val())
+                  g3.utils.decodeHtmlEntities($encode.val())
                );
             }else if(this.value === 'Clear All'){ //or, $(this).val() === 'Clear'
                $input.val('');
@@ -89,13 +89,13 @@
             }
          });
          
-         //$$.utils.entityTable
+         //g3.utils.entityTable
          for(prop in entityTable){
             i %= 10;
             if(i === 0){
                inner += '<tr class="tr0">';
             }
-            inner += '<td>' + prop + '</td>';
+            inner += '<td><spand class="hint-always hint-top" data-hint="&amp;' + entityTable[prop] + ';">' + prop + '</span></td>';
             values.push(entityTable[prop])
             if(i === 9){
                inner += '</tr>';
@@ -122,4 +122,3 @@
     </script>
 </body>
 </html>
-
