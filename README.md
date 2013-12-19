@@ -7,7 +7,7 @@ This is an ongoing repository and things will be added or removed very often.
 
 Testing is still ongoing not even from this container but also from all other <b>js*</b> projects.
 
-See it at: http://jsfiddle.net/centurianii/XEQEP/
+See it at: http://jsfiddle.net/centurianii/3R5Mg/2/
 
 Design
 ------
@@ -16,6 +16,8 @@ Internally, the whole design exploits a variation of the module pattern and buil
 A note on my library symbol: 
 -------------------------------------
 It's the '$$' internally but if you edit it at the last line (window.$$ = window.$$ || {}) you can name it whatever you want and call it like so externally!
+Also, see <b>Update</b>.
+
 Some calls:
 <pre>
 //encode-decode a string
